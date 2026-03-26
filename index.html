@@ -77,6 +77,11 @@
             display: flex;
             width: max-content;
             animation: marquee 30s linear infinite;
+            /* Added Hardware Acceleration for smoother mobile scrolling */
+            will-change: transform;
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
         
         .animate-marquee:hover {
@@ -341,17 +346,19 @@
         <!-- Navigation / Header -->
         <header class="bg-white/80 dark:bg-cineDark/90 shadow-md sticky top-0 z-40 border-b border-cineMint dark:border-cineForest transition-colors duration-300 backdrop-blur-md">
             <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-6">
+                <div class="flex items-center justify-between w-full md:w-auto gap-4 md:gap-6">
                     <div class="flex items-center gap-3 cursor-pointer group" onclick="loadGenreNav('all')">
                         <!-- Custom Interlaced Logo mimicking screenshot -->
                         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-cineForest dark:text-white group-hover:scale-110 transition-transform">
                             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" style="transform-origin: center; transform: scale(0.65);"/>
                         </svg>
-                        <span class="font-medium tracking-[0.15em] text-cineDark dark:text-white uppercase text-xl mt-0.5">Cineflow</span>
+                        <span class="font-medium tracking-[0.15em] text-cineDark dark:text-white uppercase text-xl mt-0.5 hidden sm:block">Cineflow</span>
                     </div>
-                    <div class="hidden sm:flex items-center gap-3">
-                        <button onclick="returnToLanding()" class="flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg text-cineForest dark:text-cineMint hover:bg-cineMint/50 dark:hover:bg-cineForest/50 transition-colors"><i class="fas fa-home"></i> Home</button>
+                    <div class="flex items-center gap-3">
+                        <button onclick="returnToLanding()" class="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full text-cineForest dark:text-cineMint bg-cineMint/20 dark:bg-cineForest/30 border border-cineMint/50 dark:border-cineForest/50 hover:bg-cineMint/50 dark:hover:bg-cineForest/50 transition-colors shadow-sm">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
                     </div>
                 </div>
                 
@@ -370,7 +377,7 @@
             <!-- Genres Sub-Navigation -->
             <div class="container mx-auto px-6 border-t border-cineMint/50 dark:border-cineForest/50">
                 <div class="flex gap-3 overflow-x-auto no-scrollbar py-3 items-center">
-                    <button onclick="loadGenreNav('all')" id="nav-all" class="nav-chip active">All</button>
+                    <button onclick="loadGenreNav('all')" id="nav-all" class="nav-chip active">All Movies</button>
                     <button onclick="loadGenreNav('discover')" id="nav-discover" class="nav-chip">Popular</button>
                     <button onclick="loadGenreNav('28', 'Action')" id="nav-28" class="nav-chip">Action</button>
                     <button onclick="loadGenreNav('878', 'Sci-Fi')" id="nav-878" class="nav-chip">Sci-Fi</button>
@@ -643,7 +650,21 @@
 
             class Simulation {
                 constructor() {
-                    this.options = { iterations_poisson: 32, iterations_viscous: 32, mouse_force: 20, resolution: 0.5, cursor_size: 100, viscous: 30, isBounce: false, dt: 0.014, isViscous: false, BFECC: true };
+                    // Optimized for Mobile: Downgrade simulation quality on touch devices to save GPU/CPU
+                    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+                    
+                    this.options = { 
+                        iterations_poisson: isTouch ? 8 : 32, // Drastically reduce math iterations on mobile
+                        iterations_viscous: isTouch ? 8 : 32, 
+                        mouse_force: 20, 
+                        resolution: isTouch ? 0.25 : 0.5, // Lower rendering resolution on mobile
+                        cursor_size: 100, 
+                        viscous: 30, 
+                        isBounce: false, 
+                        dt: 0.014, 
+                        isViscous: false, 
+                        BFECC: !isTouch // Disable expensive error-correction on mobile
+                    };
                     this.fbos = { vel_0: null, vel_1: null, vel_viscous0: null, vel_viscous1: null, div: null, pressure_0: null, pressure_1: null };
                     this.fboSize = new THREE.Vector2(); this.cellScale = new THREE.Vector2(); this.boundarySpace = new THREE.Vector2();
                     this.init();
@@ -783,6 +804,16 @@
             }
             loop() {
                 if (this.letterElements.length === 0) return;
+                
+                // Disable continuous font-variation recalculation on touch devices to save mobile CPU
+                const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+                if (isTouch) {
+                    this.letterElements.forEach((letterSpan) => {
+                         letterSpan.style.fontVariationSettings = Array.from(this.fromSettings.entries()).map(([axis, val]) => `'${axis}' ${val}`).join(', ');
+                    });
+                    return; // Abort animation loop
+                }
+
                 const containerRect = this.container.getBoundingClientRect();
                 this.letterElements.forEach((letterSpan, index) => {
                     const rect = letterSpan.getBoundingClientRect();
