@@ -1,0 +1,151 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #408A71; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #285A48; }
+
+/* Hide scrollbar for genre tabs but keep functionality */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Smooth image loading */
+.img-loaded { animation: fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Landing Page Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Infinite Marquee Animation for Cards */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-1 * (356px + 24px) * 5)); } 
+}
+
+.animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+
+#landing-container, #app-container {
+    transition: opacity 0.8s ease-in-out;
+}
+
+/* Variable Proximity Effect CSS */
+.variable-proximity {
+    font-family: 'Roboto Flex', sans-serif;
+    text-shadow: 0 4px 12px rgba(64,138,113,0.1);
+}
+
+#hero-title-effect.variable-proximity {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* NEW UIVERSE ELEMENTS STYLING */
+/* 1. Animated Search Bar */
+.form-control { position: relative; width: 100%; }
+.input { font-size: 1rem; background-color: transparent; width: 100%; box-sizing: border-box; padding-inline: 1em; padding-block: 0.8em; border: none; border-bottom: 2px solid rgba(176, 228, 204, 0.5); transition: all 0.3s ease; }
+.dark .input { border-bottom: 2px solid rgba(40, 90, 72, 0.5); }
+.input-border { position: absolute; background: #408A71; width: 0%; height: 2px; bottom: 0; left: 0; transition: width 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+.input:focus { outline: none; }
+.input:focus + .input-border { width: 100%; }
+.input-alt { font-size: 1.1rem; padding-inline: 1em; padding-block: 0.8em; }
+.input-border-alt { height: 3px; background: linear-gradient(90deg, #408A71 0%, #B0E4CC 50%, #285A48 100%); transition: width 0.4s cubic-bezier(0.42, 0, 0.58, 1.00); }
+.input-alt:focus + .input-border-alt { width: 100%; }
+
+/* 2. Custom Geometric Loaders */
+.loader { --path: #408A71; --dot: #B0E4CC; --duration: 3s; width: 44px; height: 44px; position: relative; display: inline-block; margin: 0 16px; }
+.loader:before { content: ""; width: 6px; height: 6px; border-radius: 50%; position: absolute; display: block; background: var(--dot); top: 37px; left: 19px; transform: translate(-18px, -18px); animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite; }
+.loader svg { display: block; width: 100%; height: 100%; }
+.loader svg rect, .loader svg polygon, .loader svg circle { fill: none; stroke: var(--path); stroke-width: 10px; stroke-linejoin: round; stroke-linecap: round; }
+.loader svg polygon { stroke-dasharray: 145 76 145 76; stroke-dashoffset: 0; animation: pathTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite; }
+.loader svg rect { stroke-dasharray: 192 64 192 64; stroke-dashoffset: 0; animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite; }
+.loader svg circle { stroke-dasharray: 150 50 150 50; stroke-dashoffset: 75; animation: pathCircle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite; }
+.loader.triangle { width: 48px; }
+.loader.triangle:before { left: 21px; transform: translate(-10px, -18px); animation: dotTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite; }
+
+@keyframes pathTriangle { 33% { stroke-dashoffset: 74; } 66% { stroke-dashoffset: 147; } 100% { stroke-dashoffset: 221; } }
+@keyframes dotTriangle { 33% { transform: translate(0, 0); } 66% { transform: translate(10px, -18px); } 100% { transform: translate(-10px, -18px); } }
+@keyframes pathRect { 25% { stroke-dashoffset: 64; } 50% { stroke-dashoffset: 128; } 75% { stroke-dashoffset: 192; } 100% { stroke-dashoffset: 256; } }
+@keyframes dotRect { 25% { transform: translate(0, 0); } 50% { transform: translate(18px, -18px); } 75% { transform: translate(0, -36px); } 100% { transform: translate(-18px, -18px); } }
+@keyframes pathCircle { 25% { stroke-dashoffset: 125; } 50% { stroke-dashoffset: 175; } 75% { stroke-dashoffset: 225; } 100% { stroke-dashoffset: 275; } }
+
+/* 3. GitHub Star Button */
+.github-btn { height: 48px; width: 140px; border: none; border-radius: 9999px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.5s ease-in-out; font-family: 'Inter', sans-serif; }
+.github-btn:hover { box-shadow: 0 4px 20px rgba(64,138,113,0.3); }
+.github-type1::after { content: "Thanks \f004"; font-family: 'Inter', 'Font Awesome 6 Free'; font-weight: 900; height: 48px; width: 140px; background-color: #285A48; color: #fff; position: absolute; top: 0%; left: 0%; transform: translateY(50px); font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.5s ease-in-out; gap: 6px; }
+.github-type1::before { content: "Star Us \f09b"; font-family: 'Inter', 'Font Awesome 6 Brands'; font-weight: 600; height: 48px; width: 140px; background-color: #408A71; color: #fff; position: absolute; top: 0%; left: 0%; transform: translateY(0px) scale(1.2); font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.5s ease-in-out; gap: 6px; }
+.github-type1:hover::after { transform: translateY(0) scale(1.1); }
+.github-type1:hover::before { transform: translateY(-50px) scale(0) rotate(120deg); }
+
+/* Navigation Genre Chips */
+.nav-chip {
+    padding: 8px 16px; border-radius: 9999px; font-weight: 600; font-size: 0.875rem; white-space: nowrap;
+    transition: all 0.3s ease; border: 1px solid transparent; cursor: pointer;
+}
+.nav-chip.active {
+    background-color: #408A71; color: white; border-color: #408A71; box-shadow: 0 4px 12px rgba(64,138,113,0.3);
+}
+.nav-chip:not(.active) {
+    background-color: rgba(176, 228, 204, 0.2); color: #285A48; border-color: rgba(176, 228, 204, 0.5);
+}
+.dark .nav-chip:not(.active) {
+    background-color: rgba(40, 90, 72, 0.2); color: #B0E4CC; border-color: rgba(40, 90, 72, 0.5);
+}
+.nav-chip:not(.active):hover { background-color: rgba(64,138,113,0.1); }
+
+/* Uiverse.io Start Exploring Button (Adapted to Theme) */
+.btn-explore {
+    background-color: #408A71;
+    padding: 14px 40px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 9999px; /* matching app theme */
+    border: 2px dashed #408A71;
+    box-shadow: rgba(64, 138, 113, 0.4) 0px 4px 16px;
+    transition: .4s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.btn-explore:hover {
+    transition: .4s;
+    border: 2px dashed #408A71;
+    background-color: #fff;
+    color: #408A71;
+}
+
+.dark .btn-explore:hover {
+    background-color: #091413;
+    color: #408A71;
+}
+
+.btn-explore:active {
+    background-color: #B0E4CC;
+}
